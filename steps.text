@@ -1,0 +1,50 @@
+    create a folder
+    move into the folder(cd)
+    npm init - y
+    open folder using VsCode
+
+    step:update package.json and add this updated script:
+    "server": "cd server && npm run dev",
+    "dev": "concurrently -n \"client,server\" -c \"bgBlue,bgYellow\" \"npm start\" \"npm run server
+   
+    npm i
+    npm i express
+    create express.js
+    npm i nodemon
+
+    npm i @ramonak/react-progress-bar
+    npm i @reduxjs/toolkit
+    npm i axios
+    npm i chart.js
+    npm i concurrently
+    npm i copy-to-clipboard
+    npm i dotenv
+    npm i express
+    npm i mongoose
+    npm i react
+    npm i react-chartjs-2
+    npm i react-dom
+    npm i react-dropzone
+    npm i react-hook-form
+    npm i react-hot-toast
+    npm i react-icons
+    npm i react-markdown
+    npm i react-otp-input
+    npm i react-rating-stars-component
+    npm i react-redux
+    npm i react-router-dom
+    npm i react-scripts
+    npm i react-super-responsive-table
+    npm i react-type-animation
+    npm i redux-toolkit
+    npm i swiper
+    npm i video-react
+    npm i web-vitals
+    npm i nodemailer
+    npm i cookie-parser
+    npm i jsonwebtoken
+    npm i otp-generator
+    npm i bcrypt
+    npm i cloudinary 
+    npm i razorpay
+    
