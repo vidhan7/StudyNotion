@@ -8,15 +8,13 @@ const mailSender = async (email, title, body) => {
                 service:"gmail",
                 
                 auth:{
-                    // user: process.env.MAIL_USER,
-                    user: "a0073354abhi@gmail.com",
-                    // pass: process.env.MAIL_PASS,
-                    pass: "inlfmrmreufuzywa",
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS,                  
                 }
             })
 
             let info = await transporter.sendMail({
-                from: 'StudyNotion || CodeHelp - by Babbar',    //vidhanchaturvedi7@gmail.com
+                from: 'StudyNotion || Vidhan Chaturvedi',    
                 to:`${email}`,
                 subject: `${title}`,
                 html: `${body}`,
