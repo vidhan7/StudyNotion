@@ -24,13 +24,15 @@ exports.resetPasswordToken = async (req, res) => {
 			{ email: email },								//search on bases of email
 			{												//update this
 				token: token,
-				resetPasswordExpires: Date.now() + 5*60*1000,
+				resetPasswordExpires: Date.now() + 5 * 60 * 1000,
 			},
 			{ new: true }									//return updated document
 		);
 		console.log("DETAILS", updatedDetails);
 		//create url
-		const url = `http://localhost:3000/update-password/${token}`;
+		const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000";
+		const url = `${FRONTEND_URL}/update-password/${token}`;
+
 		//send mail containing reset link
 		await mailSender(
 			email,
@@ -43,11 +45,11 @@ exports.resetPasswordToken = async (req, res) => {
 			message:
 				"Email Sent Successfully, Please Check Your Email to Continue Further",
 		});
-	} 
+	}
 	catch (error) {
 		console.log(error);
 		return res.status(500).json({
-			error: error.message,	
+			error: error.message,
 			success: false,
 			message: `Some Error in Sending the Reset Message`,
 		});
@@ -93,7 +95,7 @@ exports.resetPassword = async (req, res) => {
 			success: true,
 			message: `Password Reset Successful`,
 		});
-	} 
+	}
 	catch (error) {
 		return res.json({
 			error: error.message,
