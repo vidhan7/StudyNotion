@@ -40,6 +40,12 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
+.custom-gradient-bg {
+  /* background: linear-gradient(135deg, #000000, #333333, #FFFFFF);*/
+  background: linear-gradient(135deg, #000000, #1a1a1a, #333333, #f5f5f5); 
+  
+}
+
 /* https://10015.io/tools/css-loader-generator */
 .spinner {
   width: 56px;

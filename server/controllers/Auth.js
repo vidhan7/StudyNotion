@@ -6,56 +6,121 @@ const otpGenerator = require("otp-generator")
 const mailSender = require("../utils/mailSender")
 const { passwordUpdated } = require("../mail/templates/passwordUpdate")
 const Profile = require("../models/Profile")
-const otpTemplate = require("../mail/templates/emailVerificationTemplate")
+// const otpTemplate = require("../mail/templates/emailVerificationTemplate")
+const nodemailer = require("nodemailer");
 require("dotenv").config()
 
 
-// Send OTP For Email Verification
+// Send OTP For Email Verification// Send OTP For Email Verification
 exports.sendotp = async (req, res) => {
   try {
-    //fetch email from request ki body
     const { email } = req.body;
-    // Check if user is already present
-    // Find user with provided email
+
+    // Check if user already exists
     const checkUserPresent = await User.findOne({ email });
-    // to be used in case of signup
-    // If user found with provided email
     if (checkUserPresent) {
-      // Return 401 Unauthorized status code with error message
       return res.status(401).json({
         success: false,
         message: `User is Already Registered`,
-      })
+      });
     }
-    //generate otp
+
+    // Generate OTP
     var otp = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
       lowerCaseAlphabets: false,
       specialChars: false,
-    })
+    });
 
-    let result = await OTP.findOne({ otp: otp })
-    console.log("OTP Generated", otp)
-    console.log("Result", result)
+    // Check if OTP already exists in DB (to avoid duplicates)
+    let result = await OTP.findOne({ otp: otp });
+    console.log("OTP Generated", otp);
+    console.log("Result", result);
 
+    // Save OTP in DB
+    const otpPayload = { email, otp };
+    const otpBody = await OTP.create(otpPayload);
+    console.log("OTP Body", otpBody);
 
-    const otpPayload = { email, otp }
-    // const otpPayload = { email, otpTemplate(otp) };
-    const otpBody = await OTP.create(otpPayload)
-    // const otpBody = await OTP.create(otpTemplate(otpPayload))
-    console.log("OTP Body", otpBody)
+    // Email Configuration
+    const transporter = nodemailer.createTransport({
+      host: process.env.MAIL_HOST, // e.g., smtp.gmail.com
+      port: 587,                  // SMTP port for secure connection
+      auth: {
+        user: process.env.MAIL_USER, // Your email address
+        pass: process.env.MAIL_PASS, // Your app password
+      },
+    });
+
+    // Email content
+    const mailOptions = {
+      from: `"StudyNotion" <${process.env.MAIL_USER}>`, // Sender address
+      to: email,                                       // Receiver's email
+      subject: "OTP Verification for Signup",         // Subject
+      html: `<h3>Your OTP for signup is: <strong>${otp}</strong></h3>`, // Body content
+    };
+
+    // Send Email
+    await transporter.sendMail(mailOptions);
+    console.log(`OTP email sent to ${email}`);
 
     res.status(200).json({
       success: true,
-      message: 'OTP Sent Successfully',
-      otp,
-    })
+      message: "OTP Sent Successfully",
+      otp, // Remove this in production for security
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ success: false, error: error.message });
   }
-  catch (error) {
-    console.log(error.message)
-    return res.status(500).json({ success: false, error: error.message })
-  }
-}
+};
+
+
+// exports.sendotp = async (req, res) => {
+//   try {
+//     //fetch email from request ki body
+//     const { email } = req.body
+//     // Check if user is already present
+//     // Find user with provided email
+//     const checkUserPresent = await User.findOne({ email });
+//     // to be used in case of signup
+//     // If user found with provided email
+//     if (checkUserPresent) {
+//       // Return 401 Unauthorized status code with error message
+//       return res.status(401).json({
+//         success: false,
+//         message: `User is Already Registered`,
+//       })
+//     }
+//     //generate otp
+//     var otp = otpGenerator.generate(6, {
+//       upperCaseAlphabets: false,
+//       lowerCaseAlphabets: false,
+//       specialChars: false,
+//     })
+
+//     let result = await OTP.findOne({ otp: otp })
+//     console.log("OTP Generated", otp)
+//     console.log("Result", result)
+
+
+//     const otpPayload = { email, otp }
+//     // const otpPayload = { email, otpTemplate(otp) };
+//     const otpBody = await OTP.create(otpPayload)
+//     // const otpBody = await OTP.create(otpTemplate(otpPayload))
+//     console.log("OTP Body", otpBody)
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'OTP Sent Successfully',
+//       otp,
+//     })
+//   }
+//   catch (error) {
+//     console.log(error.message)
+//     return res.status(500).json({ success: false, error: error.message })
+//   }
+// }
 
 
 // Signup Controller for Registering USers
