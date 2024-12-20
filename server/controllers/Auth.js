@@ -54,7 +54,7 @@ exports.sendotp = async (req, res) => {
 
     // Email content
     const mailOptions = {
-      from: `"StudyNotion" <${process.env.MAIL_USER}>`, // Sender address
+      from: `"CourseHive" <${process.env.MAIL_USER}>`, // Sender address
       to: email,                                       // Receiver's email
       subject: "OTP Verification for Signup",         // Subject
       html: `<h3>Your OTP for signup is: <strong>${otp}</strong></h3>`, // Body content
